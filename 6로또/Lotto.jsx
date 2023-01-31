@@ -1,13 +1,9 @@
 const React = require('react');
-const { useState, useRef, useEffect, useMemo } = React;
+const { useState, useRef, useEffect, useMemo, useCallback } = React;
 const Ball = require('./Ball');
 
-function testtest() {
-  console.log('테스트')
-}
 
 function getWinNumbers() {
-  console.log('머여')
   const candidate = new Array(45).fill(0).map((v,i) => v + i);
   const shuffle = [];
   while (candidate.length > 0) {
@@ -25,26 +21,34 @@ function getWinNumbers() {
 
 function LottoClass() {
   console.log('렌더')
-  const memoTest = useMemo(() => testtest(), [])
-  const [ winNumbers, setWinNumbers ] = useState(getWinNumbers);
+  const getNumberMemo = useMemo(() => getWinNumbers(), []);
+  const [ winNumbers, setWinNumbers ] = useState(getNumberMemo);
   const [ winBalls, setWinBalls ] = useState([]);
   const [ bonus, setBonus ] = useState(null);
   const [ redo, setRedo ] = useState(false);
 
-  const [ test, setTest ] = useState(memoTest)
-
   const timeouts = useRef([]);
 
-  const onClickRedo = () => {
-    setWinNumbers(getWinNumbers);
+  useEffect(() => {
+    runTimeouts();
+    return () => {
+      timeouts.current.forEach(t => {
+        clearTimeout(t);
+      })
+    }
+  }, [timeouts.current])
+
+
+  const onClickRedo = useCallback(() => {
+    console.log('당첨숫자', winNumbers) // winNumbers의 값은 초기값만 찍힘 업뎃된 값으로 안바뀜
+    // 따라서 useCallback안에서 사용되는 state는 두번째 인자 배열 안에 넣어줘야 업뎃이 됨
+    setWinNumbers(getWinNumbers());
     setWinBalls([]);
     setBonus(null);
     setRedo(false);
 
     timeouts.current = [];
-
-    runTimeouts();
-  }
+  }, [winNumbers])
 
   const runTimeouts = () => {
     for (let i = 0; i < winNumbers.length-1; i++) {
@@ -55,23 +59,13 @@ function LottoClass() {
             winNumbers[i]
           ]
         })
-      }, (i+1) * 1000)
+      }, (i+1) * 500)
     }
     timeouts.current[6] = setTimeout(() => {
       setBonus(winNumbers[6]);
       setRedo(true);
-    }, 7000)
+    }, 3000)
   }
-  
-  useEffect(() => {
-    console.log('이펙트')
-    runTimeouts();
-    return () => {
-      timeouts.current.forEach(t => {
-        clearTimeout(t);
-      })
-    }
-  }, [winNumbers.length === 0])
 
   const styleGood = {
     fontSize: '30px',
