@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button 
+  onclick="
+    (function () {
+      console.log('이거 실행하라우')
+    })()
+  "
+  >
+    Like
+  </button>
+
+  <script type="text/javascript">
+    'use strick'
+
+    class CreateButton {
+      state = '상태1';
+      state2 = '상태2';
+
+      constructor(props) {
+        this.state3 = '상태3';
+        this.props = props;
+      }
+
+      arrowFun = () => {
+        console.log('화살표 디스??', this)
+      }
+
+      nomalFun = function() {
+          console.log('일반함수에서 디스?', this)
+      }
+          
+      test() {
+        console.log('테스트')
+      }
+    }
+
+    console.log(
+      new CreateButton('띠용').state,
+      new CreateButton('띠용').state3,
+      new CreateButton('띠용').props
+    ) // "상태1 상태3 띠용"
+        
+    new CreateButton().test() // "테스트"
+    new CreateButton().arrowFun() // "화살표 디스?" CreateButton{... }
+    new CreateButton().nomalFun() // "일반함수에서 디스?" CreateButton{... }
+    
+  </script>
+</body>
+</html>
