@@ -19,6 +19,7 @@ const initialState = {
 const SET_WINNER = 'SET_WINNER';
 const CLICK_SELL = 'CLICK_SELL';
 const CHANGE_TURN = 'CHANGE_TURN';
+const RESET_GAME = 'RESET_GAME';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -45,6 +46,18 @@ const reducer = (state, action) => {
         ...state,
         turn: state.turn === 'O' ? 'X' : 'O'
       };
+
+    case 'RESET_GAME':
+      return {
+        ...state,
+        turn: 'O',
+        tableData: [
+          ['','',''],
+          ['','',''],
+          ['','',''],
+        ],
+        recentCell: [-1, -1]
+      }
   }
 }
 
@@ -52,11 +65,47 @@ const reducer = (state, action) => {
 
 const TicTacToe = () => {
   const [ state, dispatch ] = useReducer(reducer, initialState);
+  const { tableData, recentCell, turn } = state;
 
   useEffect(() => {
-    const { recentCell } = state
     console.log('유즈이펙트', recentCell)
-  }, [state.tableData])
+    
+    const [ row, cell ] = recentCell;
+
+    if (row < 0) {
+      return;
+    }
+
+    let win = false;
+    if (tableData[row][0] === turn && tableData[row][1] === turn && tableData[row][2] === turn) win = true;
+    if (tableData[0][cell] === turn && tableData[1][cell] === turn && tableData[2][cell] === turn) win = true;
+    if (tableData[0][0] === turn && tableData[1][1] === turn && tableData[2][2] === turn) win = true;
+    if (tableData[0][2] === turn && tableData[1][1] === turn && tableData[2][0] === turn) win = true;
+
+    if (win) { // 승리시
+      dispatch({ type: SET_WINNER, winner: turn });
+      dispatch({ type: RESET_GAME });
+
+    } else {
+      let all = true; // all이 true면 무승부라는 뜻
+      tableData.forEach((row) => { // 무승부 검사
+        row.forEach((cell) => {
+          if (!cell) {
+            all = false;
+          }
+        });
+      });
+
+      if (all) {
+        dispatch({ type: SET_WINNER, winner: null });
+        dispatch({ type: RESET_GAME });
+
+      } else {
+        dispatch({ type: CHANGE_TURN });
+      }
+    }
+
+  }, [state.recentCell])
 
 
   const onClickTable = useCallback(() => {
@@ -76,4 +125,5 @@ module.exports = TicTacToe;
 exports.SET_WINNER = SET_WINNER;
 exports.CLICK_SELL = CLICK_SELL;
 exports.CHANGE_TURN = CHANGE_TURN;
+exports.RESET_GAME = RESET_GAME;
 // export default TicTacToe

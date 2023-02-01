@@ -1,4 +1,5 @@
 const React = require('react');
+const { memo } = React;
 const Td = require('./Td');
 
 const Tr = ({ rowData, rowIndex, dispatch }) => {
@@ -13,4 +14,4 @@ const Tr = ({ rowData, rowIndex, dispatch }) => {
   )
 }
 
-module.exports = Tr;
+module.exports = memo(Tr);
