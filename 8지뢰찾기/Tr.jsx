@@ -1,5 +1,5 @@
 const React = require('react');
-const { useEffect, useReducer, useCallback, useContext } = React;
+const { useEffect, useReducer, useCallback, useContext, memo } = React;
 const MineSearch = require('./MineSearch');
 const Td = require('./Td');
 
@@ -16,4 +16,4 @@ const Tr = ({ rowIndex }) => {
   )
 }
 
-module.exports = Tr;
+module.exports = memo(Tr);

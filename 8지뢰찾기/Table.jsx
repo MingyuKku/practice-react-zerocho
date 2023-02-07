@@ -1,5 +1,5 @@
 const React = require('react');
-const { useEffect, useReducer, useCallback, useContext } = React;
+const { useEffect, useReducer, useCallback, useContext, memo } = React;
 const MineSearch = require('./MineSearch');
 const Tr = require('./Tr');
 
@@ -18,4 +18,4 @@ const Table = () => {
   )
 }
 
-module.exports = Table;
+module.exports = memo(Table);

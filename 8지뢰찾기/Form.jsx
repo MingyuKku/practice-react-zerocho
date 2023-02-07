@@ -1,5 +1,5 @@
 const React = require('react');
-const { useEffect, useState, useCallback, useContext } = React;
+const { useEffect, useState, useCallback, useContext, memo } = React;
 const MineSearch = require('./MineSearch');
 
 const Form = () => {
@@ -27,11 +27,11 @@ const Form = () => {
   return (
     <div>
       <input type="number" placeholder='세로' value={ row } onChange={ onChangeRow } />
-      <input type="number" placeholder='가로' value={ row } onChange={ onChangeCell } />
-      <input type="number" placeholder='지뢰' value={ row } onChange={ onChangeMine } />
+      <input type="number" placeholder='가로' value={ cell } onChange={ onChangeCell } />
+      <input type="number" placeholder='지뢰' value={ mine } onChange={ onChangeMine } />
       <button onClick={ onClickBtn }>시작</button>
     </div>
   )
 }
 
-module.exports = Form;
+module.exports = memo(Form);
